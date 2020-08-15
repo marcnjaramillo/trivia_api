@@ -14,7 +14,7 @@ def paginate_questions(request, all_questions):
     start = (page - 1) * QUESTIONS_PER_PAGE
     end = start + QUESTIONS_PER_PAGE
 
-    questions = [question.format() for question in questions]
+    questions = [question.format() for question in all_questions]
     current_questions = questions[start:end]
 
     return current_questions
@@ -25,7 +25,7 @@ def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
 
-    CORS(app)
+    CORS(app, resources={r'*': {'origins': '*'}})
 
     @app.after_request
     def after_request(response):
@@ -38,7 +38,8 @@ def create_app(test_config=None):
     @app.route('/categories', methods=['GET'])
     def get_categories():
         categories = Category.query.all()
-        formatted_categories = [category.format() for category in categories]
+        formatted_categories = {
+            category.id: category.type for category in categories}
         return jsonify({
             'success': True,
             'categories': formatted_categories
@@ -56,6 +57,24 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
+    @app.route('/questions/', methods=['GET'])
+    def get_paginated_questions():
+        all_questions = Question.query.order_by(Question.id).all()
+        current_questions = paginate_questions(request, all_questions)
+        categories = Category.query.all()
+        formatted_categories = {
+            category.id: category.type for category in categories}
+
+        if len(current_questions) == 0:
+            abort(404)
+
+        return jsonify({
+            'success': True,
+            'questions': current_questions,
+            'total_questions': len(Question.query.all()),
+            'categories': formatted_categories,
+            'current_category': None
+        })
 
     '''
   @TODO: 
