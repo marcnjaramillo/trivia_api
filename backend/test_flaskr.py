@@ -46,6 +46,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['current_category'], None)
         self.assertTrue(data['categories'])
 
+    def test_get_questions_page_not_found(self):
+        res = self.client().get('/questions?page=1000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Not Found')
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
