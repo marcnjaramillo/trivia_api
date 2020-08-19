@@ -19,6 +19,13 @@ class TriviaTestCase(unittest.TestCase):
             'localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
+        self.new_question = {
+            'question': 'What is the "easter egg" that is claimed to appear in every Pixar film?',
+            'answer': 'A113',
+            'difficulty': 2,
+            'category': 'Entertainment'
+        }
+
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -74,6 +81,16 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable Entity')
+
+    def test_create_new_question(self):
+        res = self.client().post('/questions', json=self.new_question)
+        data = json.loads(res.data)
+        pass
+
+    def test_422_if_question_creation_fails(self):
+        res = self.client().post('/questions', json=self.new_question)
+        data = json.loads(res.data)
+        pass
 
 
 # Make the tests conveniently executable
