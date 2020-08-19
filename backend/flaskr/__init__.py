@@ -88,16 +88,6 @@ def create_app(test_config=None):
             print(e)
             abort(422)
 
-    '''
-  @TODO: 
-  Create an endpoint to POST a new question, 
-  which will require the question and answer text, 
-  category, and difficulty score.
-
-  TEST: When you submit a question on the "Add" tab, 
-  the form will clear and the question will appear at the end of the last page
-  of the questions list in the "List" tab.  
-  '''
     @app.route('/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
@@ -124,16 +114,25 @@ def create_app(test_config=None):
         except Exception as e:
             print(e)
             abort(422)
-    '''
-  @TODO: 
-  Create a POST endpoint to get questions based on a search term. 
-  It should return any questions for whom the search term 
-  is a substring of the question. 
 
-  TEST: Search by any phrase. The questions list will update to include 
-  only question that include that string within their question. 
-  Try using the word "title" to start. 
-  '''
+    @app.route('/questions/search', methods=['POST'])
+    def search_questions():
+        body = request.get_json()
+        search = body.get('searchTerm', '')
+
+        try:
+            all_questions = Question.query.order_by(Question.id).filter(
+                Question.question.ilike('%{}%'.format(search)))
+            current_questions = paginate_questions(request, all_questions)
+
+            return jsonify({
+                'success': True,
+                'questions': current_questions,
+                'total_questions': len(Question.query.all())
+            })
+        except Exception as e:
+            print(e)
+            abort(422)
 
     '''
   @TODO: 
