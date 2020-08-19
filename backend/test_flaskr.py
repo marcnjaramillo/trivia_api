@@ -85,12 +85,30 @@ class TriviaTestCase(unittest.TestCase):
     def test_create_new_question(self):
         res = self.client().post('/questions', json=self.new_question)
         data = json.loads(res.data)
-        pass
 
     def test_422_if_question_creation_fails(self):
         res = self.client().post('/questions', json=self.new_question)
         data = json.loads(res.data)
-        pass
+
+    def test_search_questions_with_returned_questions(self):
+        res = self.client().post('/questions/search',
+                                 json={'searchTerm': 'title'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['total_questions'])
+        self.assertEqual(len(data['questions']), 2)
+
+    def test_search_questions_with_no_returned_questions(self):
+        res = self.client().post('/questions/search',
+                                 json={'searchTerm': '#$%'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['total_questions'])
+        self.assertEqual(len(data['questions']), 0)
 
 
 # Make the tests conveniently executable
