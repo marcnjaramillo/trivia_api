@@ -23,7 +23,7 @@ class TriviaTestCase(unittest.TestCase):
             'question': 'What is the "easter egg" that is claimed to appear in every Pixar film?',
             'answer': 'A113',
             'difficulty': 2,
-            'category': 'Entertainment'
+            'category': 5
         }
 
         # binds the app to the current context
@@ -37,11 +37,6 @@ class TriviaTestCase(unittest.TestCase):
         """Executed after reach test"""
         pass
 
-    """
-    TODO
-    Write at least one test for each test for successful operation and for expected errors.
-    """
-
     def test_get_questions(self):
         res = self.client().get('/questions?page=1')
         data = json.loads(res.data)
@@ -53,7 +48,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['current_category'], None)
         self.assertTrue(data['categories'])
 
-    def test_get_questions_page_not_found(self):
+    def test_404_if_requested_page_does_not_exist(self):
         res = self.client().get('/questions?page=1000')
         data = json.loads(res.data)
 
@@ -86,7 +81,7 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().post('/questions', json=self.new_question)
         data = json.loads(res.data)
 
-    def test_422_if_question_creation_fails(self):
+    def test_422_question_creation_fails(self):
         res = self.client().post('/questions', json=self.new_question)
         data = json.loads(res.data)
 
@@ -109,6 +104,16 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['total_questions'])
         self.assertEqual(len(data['questions']), 0)
+
+    def test_get_question_by_category(self):
+        res = self.client().get('/categories/1/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertEqual(data['current_category'], None)
 
 
 # Make the tests conveniently executable
