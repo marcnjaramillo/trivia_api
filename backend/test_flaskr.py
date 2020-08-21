@@ -37,6 +37,9 @@ class TriviaTestCase(unittest.TestCase):
         """Executed after reach test"""
         pass
 
+    #============================================================================#
+    # TEST CASES
+    #============================================================================#
     def test_get_questions(self):
         res = self.client().get('/questions?page=1')
         data = json.loads(res.data)
@@ -69,7 +72,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data['questions']))
         self.assertEqual(question, None)
 
-    def test_404_if_question_does_not_exist(self):
+    def test_422_if_question_does_not_exist(self):
         res = self.client().delete('/questions/1000')
         data = json.loads(res.data)
 
@@ -114,6 +117,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['questions'])
         self.assertTrue(data['total_questions'])
         self.assertEqual(data['current_category'], None)
+
+    def test_404_get_question_by_category(self):
+        res = self.client().get('/categories/500')
+        data = json.loads(res.data)
+
+        self.assertEqual(data['error'], 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Not Found')
 
 
 # Make the tests conveniently executable
