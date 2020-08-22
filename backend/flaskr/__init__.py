@@ -36,11 +36,16 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response
 
+#==========================================================================#
+# ENDPOINTS
+#==========================================================================#
+
     @app.route('/categories', methods=['GET'])
     def get_categories():
         categories = Category.query.all()
         formatted_categories = {
             category.id: category.type for category in categories}
+
         return jsonify({
             'success': True,
             'categories': formatted_categories
@@ -119,6 +124,7 @@ def create_app(test_config=None):
     def search_questions():
         body = request.get_json()
         search = body.get('searchTerm', '')
+        print(body)
 
         try:
             all_questions = Question.query.order_by(Question.id).filter(
@@ -134,14 +140,6 @@ def create_app(test_config=None):
             print(e)
             abort(422)
 
-    '''
-  @TODO: 
-  Create a GET endpoint to get questions based on category. 
-
-  TEST: In the "List" tab / main screen, clicking on one of the 
-  categories in the left column will cause only questions of that 
-  category to be shown. 
-  '''
     @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def get_questions_by_category(category_id):
         try:
@@ -162,17 +160,44 @@ def create_app(test_config=None):
         except Exception as e:
             print(e)
             abort(422)
-    '''
-  @TODO: 
-  Create a POST endpoint to get questions to play the quiz. 
-  This endpoint should take category and previous question parameters 
-  and return a random questions within the given category, 
-  if provided, and that is not one of the previous questions. 
 
-  TEST: In the "Play" tab, after a user selects "All" or a category,
-  one question at a time is displayed, the user is allowed to answer
-  and shown whether they were correct or not. 
-  '''
+    @app.route('/quizzes', methods=['POST'])
+    def play_quiz():
+        body = request.get_json()
+        previous_questions = body.get('previous_questions', [])
+        quiz_category = body.get('quiz_category', None)
+        print(body)
+
+        try:
+            if quiz_category['id'] == 0:
+                filtered_questions = Question.query.all()
+            else:
+                filtered_questions = Question.query.filter_by(
+                    category=quiz_category['id']).all()
+
+            quiz_questions = []
+
+            for question in filtered_questions:
+                if question.id not in previous_questions:
+                    quiz_questions.append(question.format())
+
+            if len(quiz_questions) != 0:
+                result = random.choice(quiz_questions)
+                return jsonify({
+                    'success': True,
+                    'question': result
+                })
+            else:
+                return jsonify({
+                    'question': False
+                })
+        except Exception as e:
+            print(e)
+            abort(422)
+
+#==========================================================================#
+#  ERROR HANDLERS
+#==========================================================================#
 
     @app.errorhandler(400)
     def bad_request(error):
@@ -221,5 +246,13 @@ def create_app(test_config=None):
             "error": 422,
             "message": "Unprocessable Entity"
         }), 422
+
+    @app.errorhandler(500)
+    def server_error(error):
+        return jsonify({
+            "success": False,
+            "error": 500,
+            "message": "Server Error"
+        }), 500
 
     return app
