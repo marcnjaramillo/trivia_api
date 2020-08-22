@@ -71,7 +71,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 }
 ```
 ### GET '/questions'
-**What it does:** Fetches all questions along with their categories, answers, and difficulty ratings. This is structured as a list of numerous question dictionaries. Each question consists of numerous key:value pairs.
+**What it does:** Fetches all questions along with their categories, answers, and difficulty ratings. This is structured as a list of numerous question dictionaries. Each question consists of key:value pairs for ID, question, answer, category, and difficulty.
 - Request Arguments: None
 - Returns: A JSON object - questions - that contains a list of dictionaries with several key:value pairs. Results are paginated, allowing up to 10 questions per page
 ```
