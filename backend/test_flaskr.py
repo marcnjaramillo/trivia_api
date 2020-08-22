@@ -40,6 +40,18 @@ class TriviaTestCase(unittest.TestCase):
     #============================================================================#
     # TEST CASES
     #============================================================================#
+    def test_get_categories(self):
+        res = self.client().get('/categories')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['categories'])
+
+    # Test case for '/categories' FAIL
+    # ----------------------------------
+    # I couldn't think of a way to test for an expected failure that wouldn't cause other tests to fail. The only thing I could think of is a 404 because there are no categories, but that would mean I have to delete the entire database and create questions without categories, which would cause at least the success test for '/categories/id/questions' to fail. Per this post (https://knowledge.udacity.com/questions/252621), I have concluded the only reasonable answer is that there is no failure case for this endpoint.
+
     def test_get_questions(self):
         res = self.client().get('/questions?page=1')
         data = json.loads(res.data)
@@ -125,6 +137,26 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['error'], 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Not Found')
+
+    def test_quiz_play(self):
+        quiz_params = {'previous_questions': [0], 'quiz_category': {'id': 1}}
+        res = self.client().post('/quizzes', json=quiz_params)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question'])
+
+    # Technically, this test works but I feel like it could be written better.
+    def test_422_quiz_questions_do_not_exist(self):
+        quiz_params = {'previous_questions': [
+            0], 'quiz_category': {'id': 1000}}
+        res = self.client().post('/quizzes', json=quiz_params)
+        data = json.loads(res.data)
+
+        quiz_questions = Question.query.filter_by(category=1000)
+        if not quiz_questions:
+            self.assertEqual(res.status_code, 422)
 
 
 # Make the tests conveniently executable
