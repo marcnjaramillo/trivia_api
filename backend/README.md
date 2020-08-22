@@ -53,29 +53,32 @@ Setting the `FLASK_ENV` variable to `development` will detect file changes and r
 Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` directory and the `__init__.py` file to find the application. 
 
 ## Endpoints
+There are a total of seven endpoints you can interact with. This section gives a brief description of what each endpoint does, what request arguments are required, what HTTP methods are allowed, and what the expected return is.
 
-### GET '/categories'
+### '/categories'
 **What it does:** Fetches all categories. The structure is a dictionary wherein each item consists of a key:value pair.
 - Request Arguments: None
+- HTTP Methods Allowed: GET
 - Returns: A JSON object - categories - that contains an object with key:value pairs (id: 'category_name').
 ```
 {
   'categories': {
-    1 : "Science",
-    2 : "Art",
-    3 : "Geography",
-    4 : "History",
-    5 : "Entertainment",
-    6 : "Sports"
+    1 : 'Science',
+    2 : 'Art',
+    3 : 'Geography',
+    4 : 'History',
+    5 : 'Entertainment',
+    6 : 'Sports'
   }
 }
 ```
-### GET '/questions'
+### '/questions'
 **What it does:** Fetches all questions along with their categories, answers, and difficulty ratings. This is structured as a list of numerous question dictionaries. Each question consists of key:value pairs for ID, question, answer, category, and difficulty.
 - Request Arguments: None
-- Returns: A JSON object - questions - that contains a list of dictionaries with several key:value pairs. Results are paginated, allowing up to 10 questions per page
+- Returns: A JSON object - questions - that contains a success boolean, a list of question dictionaries with several key:value pairs, the total number of questions, a list of categories, and the current category (defaults to **None**). Results are paginated, allowing up to 10 questions per page
 ```
 {
+  'success': True,
   'questions': [
     {
       'id': 2, 
@@ -98,7 +101,17 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
       'category': 3, 
       'difficulty': 3
     }
-  ]
+  ],
+  'total_questions': 18,
+  'categories': {
+    1 : 'Science',
+    2 : 'Art',
+    3 : 'Geography',
+    4 : 'History',
+    5 : 'Entertainment',
+    6 : 'Sports'
+  },
+  'current_category': None
 }
 ```
 
