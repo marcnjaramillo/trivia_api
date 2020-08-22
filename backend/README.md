@@ -57,8 +57,11 @@ There are a total of seven endpoints you can interact with. This section gives a
 
 ### '/categories'
 **What it does:** Fetches all categories. The structure is a dictionary wherein each item consists of a key:value pair.
+
 **Request Arguments:** None
+
 **HTTP Methods Allowed:** GET
+
 **Returns:** A JSON object - categories - that contains an object with key:value pairs (id: 'category_name').
 ```
 {
@@ -74,8 +77,11 @@ There are a total of seven endpoints you can interact with. This section gives a
 ```
 ### '/questions'
 **What it does:** Fetches all questions along with their categories, answers, and difficulty ratings. This is structured as a list of numerous question dictionaries. Each question consists of key:value pairs for ID, question, answer, category, and difficulty.
+
 **Request Arguments:** None
+
 **HTTP Methods Allowed:** GET
+
 **Returns:** A JSON object - questions - that contains a success boolean, a list of question dictionaries with several key:value pairs, the total number of questions, a list of categories, and the current category (defaults to **None**). Results are paginated, allowing up to 10 questions per page
 ```
 {
