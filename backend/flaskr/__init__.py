@@ -70,24 +70,43 @@ def create_app(test_config=None):
             'current_category': None
         })
 
-    @app.route('/questions/<int:question_id>', methods=['DELETE'])
-    def delete_question(question_id):
+    # I changed the endpoint because it didn't make sense to me. Since we are filtering questions based on category, it made more sense for the endpoint to be grouped with the other question endpoints.
+    @app.route('/questions/category/<int:category_id>', methods=['GET'])
+    def get_questions_by_category(category_id):
         try:
-            question = Question.query.filter(
-                Question.id == question_id).one_or_none()
 
-            if question is None:
+            all_questions = Question.query.filter_by(
+                category=category_id).order_by(Question.id).all()
+            current_questions = paginate_questions(request, all_questions)
+
+            if category_id is None:
                 abort(404)
 
-            question.delete()
-            all_questions = Question.query.order_by(Question.id).all()
+            return jsonify({
+                'success': True,
+                'questions': current_questions,
+                'total_questions': len(Question.query.all()),
+                'current_category': category_id
+            })
+        except Exception as e:
+            print(e)
+            abort(422)
+
+    @app.route('/questions/search', methods=['POST'])
+    def search_questions():
+        body = request.get_json()
+        search = body.get('searchTerm', '')
+
+        try:
+            all_questions = Question.query.order_by(Question.id).filter(
+                Question.question.ilike('%{}%'.format(search)))
             current_questions = paginate_questions(request, all_questions)
 
             return jsonify({
                 'success': True,
-                'deleted': question_id,
                 'questions': current_questions,
-                'total_questions': len(Question.query.all())
+                'total_questions': len(Question.query.all()),
+                'current_category': None
             })
         except Exception as e:
             print(e)
@@ -120,42 +139,24 @@ def create_app(test_config=None):
             print(e)
             abort(422)
 
-    @app.route('/questions/search', methods=['POST'])
-    def search_questions():
-        body = request.get_json()
-        search = body.get('searchTerm', '')
-        print(body)
-
+    @app.route('/questions/<int:question_id>', methods=['DELETE'])
+    def delete_question(question_id):
         try:
-            all_questions = Question.query.order_by(Question.id).filter(
-                Question.question.ilike('%{}%'.format(search)))
-            current_questions = paginate_questions(request, all_questions)
+            question = Question.query.filter(
+                Question.id == question_id).one_or_none()
 
-            return jsonify({
-                'success': True,
-                'questions': current_questions,
-                'total_questions': len(Question.query.all())
-            })
-        except Exception as e:
-            print(e)
-            abort(422)
-
-    @app.route('/categories/<int:category_id>/questions', methods=['GET'])
-    def get_questions_by_category(category_id):
-        try:
-
-            all_questions = Question.query.filter_by(
-                category=str(category_id)).order_by(Question.id).all()
-            current_questions = paginate_questions(request, all_questions)
-
-            if category_id is None:
+            if question is None:
                 abort(404)
 
+            question.delete()
+            all_questions = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, all_questions)
+
             return jsonify({
                 'success': True,
+                'deleted': question_id,
                 'questions': current_questions,
-                'total_questions': len(Question.query.all()),
-                'current_category': None
+                'total_questions': len(Question.query.all())
             })
         except Exception as e:
             print(e)
