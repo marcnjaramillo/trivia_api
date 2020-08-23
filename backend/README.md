@@ -125,9 +125,9 @@ There are a total of seven endpoints you can interact with. This section gives a
 ```
 
 ### '/questions/category/<int:category_id>'
-**What it does:** Fetches all questions that match a search term provided by the user. The structure is identical to the previous endpoint.
+**What it does:** Fetches all questions based on a category filter. The structure is identical to the main questions endpoint.
 
-**Request Arguments:** None
+**Request Arguments:** category_id
 
 **HTTP Methods Allowed:** POST
 
@@ -164,9 +164,8 @@ There are a total of seven endpoints you can interact with. This section gives a
 }
 ```
 
-
 ### '/questions/search'
-**What it does:** Fetches all questions that match a search term provided by the user. The structure is identical to the previous endpoint.
+**What it does:** Fetches all questions that match a search term provided by the user. The structure is identical to the main questions endpoint.
 
 **Request Arguments:** None
 
