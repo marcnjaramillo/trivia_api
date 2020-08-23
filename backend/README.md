@@ -62,7 +62,7 @@ There are a total of seven endpoints you can interact with. This section gives a
 
 **HTTP Methods Allowed:** GET
 
-**Returns:** A JSON object - categories - that contains an object with key:value pairs (id: 'category_name').
+**Returns:** A JSON object that contains a success message and an object with categories.
 ```
 {
   'categories': {
@@ -75,14 +75,15 @@ There are a total of seven endpoints you can interact with. This section gives a
   }
 }
 ```
+
 ### '/questions'
-**What it does:** Fetches all questions along with their categories, answers, and difficulty ratings. This is structured as a list of numerous question dictionaries. Each question consists of key:value pairs for ID, question, answer, category, and difficulty.
+**What it does:** Fetches all questions along with their categories, answers, and difficulty ratings. This is structured as a list of numerous question dictionaries. Each question consists of key:value pairs for ID, question, answer, category, and difficulty. This is the default view of the application.
 
 **Request Arguments:** None
 
 **HTTP Methods Allowed:** GET
 
-**Returns:** A JSON object - questions - that contains a success boolean, a list of question dictionaries with several key:value pairs, the total number of questions, a list of categories, and the current category (defaults to **None**). Results are paginated, allowing up to 10 questions per page
+**Returns:** A JSON object that contains a success message, a list of questions, the total number of questions, a list of categories, and the current category (defaults to **None**). Results are paginated, allowing up to 10 questions per page.
 ```
 {
   'success': True,
@@ -102,6 +103,7 @@ There are a total of seven endpoints you can interact with. This section gives a
       'difficulty': 4
     }, 
     ...,
+    ...,
     {
       'id': 14, 
       'question': 'In which royal palace would you find the Hall of Mirrors?', 'answer': 'The Palace of Versailles', 
@@ -109,7 +111,7 @@ There are a total of seven endpoints you can interact with. This section gives a
       'difficulty': 3
     }
   ],
-  'total_questions': 18,
+  'total_questions': 20,
   'categories': {
     1 : 'Science',
     2 : 'Art',
@@ -118,6 +120,80 @@ There are a total of seven endpoints you can interact with. This section gives a
     5 : 'Entertainment',
     6 : 'Sports'
   },
+  'current_category': None
+}
+```
+
+### '/questions/category/<int:category_id>'
+**What it does:** Fetches all questions that match a search term provided by the user. The structure is identical to the previous endpoint.
+
+**Request Arguments:** None
+
+**HTTP Methods Allowed:** POST
+
+**Returns:** A JSON object that contains a success message, a list of questions, the total number of questions, and the current category. Results are paginated, allowing up to 10 questions per page.
+```
+# category = 1
+{
+  'success': True,
+  'questions': [
+    {
+      'id': 20, 
+      'question': 'What is the heaviest organ in the human body?', 
+      'answer': 'The Liver', 
+      'category': 1, 
+      'difficulty': 4
+    }, 
+    {
+      'id': 21, 
+      'question': 'Who discovered penicilin?', 
+      'answer': 'Alexander Fleming', 
+      'category': 1, 
+      'difficulty': 3
+    },
+    {
+      'id': 22, 
+      'question': 'Hematology is a branch of medicine involving the study of what?', 
+      'answer': 'Blood', 
+      'category': 1, 
+      'difficulty': 4
+    }
+  ],
+  'total_questions': 20,
+  'current_category': 1
+}
+```
+
+
+### '/questions/search'
+**What it does:** Fetches all questions that match a search term provided by the user. The structure is identical to the previous endpoint.
+
+**Request Arguments:** None
+
+**HTTP Methods Allowed:** POST
+
+**Returns:** A JSON object that contains a success message, a list of questions, the total number of questions, and the current category (defaults to **None**). Results are paginated, allowing up to 10 questions per page.
+```
+# search term = 'title'
+{
+  'success': True,
+  'questions': [
+    {
+      'id': 5, 
+      'question': 'Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?', 
+      'answer': 'Maya Angelou', 
+      'category': 4, 
+      'difficulty': 2
+    }, 
+    {
+      'id': 6, 
+      'question': 'What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?', 
+      'answer': 'Edward Scissorhands', 
+      'category': 5, 
+      'difficulty': 3
+    }
+  ],
+  'total_questions': 20,
   'current_category': None
 }
 ```
