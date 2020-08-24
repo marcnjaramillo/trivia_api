@@ -228,6 +228,35 @@ curl http://127.0.0.1:5000/questions
 }
 ```
 
+### POST '/quizzes'
+**What it does:** Plays through a trivia game. Questions can be from all categories or restricted to a specific category. Once all available questions have been exhausted, the game exits and displays the player's total correct answers. 
+
+**Request Arguments:** previous_questions and quiz_category
+
+**Returns:** A JSON object that contains a success message and a randomly selected question. If there are no questions left, question is marked **False**
+
+```
+# curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d
+'{"previous_questions": [2],"quiz_category": {"type":"Science","id": "1"}}'
+
+{
+  "question": {
+    "answer": "Alexander Fleming", 
+    "category": 1, 
+    "difficulty": 3, 
+    "id": 21, 
+    "question": "Who discovered penicillin?"
+  }, 
+  "success": true
+}
+
+# once all questions have been exhausted
+
+{
+  "question": False
+}
+```
+
 ## Testing
 To run the tests, run
 ```
