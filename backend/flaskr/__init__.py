@@ -38,9 +38,9 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response
 
-#==========================================================================#
+# ========================================================================== #
 # ENDPOINTS
-#==========================================================================#
+# ========================================================================== #
 
     @app.route('/categories', methods=['GET'])
     def get_categories():
@@ -72,7 +72,6 @@ def create_app(test_config=None):
             'current_category': None
         })
 
-    # I changed the endpoint because it didn't make sense to me. Since we are filtering questions based on category, it made more sense for the endpoint to be grouped with the other question endpoints.
     @app.route('/questions/category/<int:category_id>', methods=['GET'])
     def get_questions_by_category(category_id):
         try:
@@ -124,8 +123,10 @@ def create_app(test_config=None):
         new_category = body.get('category', None)
 
         try:
-            question = Question(question=new_question, answer=new_answer,
-                                difficulty=new_difficulty, category=new_category)
+            question = Question(question=new_question,
+                                answer=new_answer,
+                                difficulty=new_difficulty,
+                                category=new_category)
             question.insert()
 
             return jsonify({
@@ -191,9 +192,9 @@ def create_app(test_config=None):
             print(e)
             abort(422)
 
-#==========================================================================#
-#  ERROR HANDLERS
-#==========================================================================#
+# ========================================================================== #
+# ERROR HANDLERS
+# ========================================================================== #
 
     @app.errorhandler(400)
     def bad_request(error):
