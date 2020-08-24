@@ -126,13 +126,9 @@ def create_app(test_config=None):
                                 difficulty=new_difficulty, category=new_category)
             question.insert()
 
-            all_questions = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, all_questions)
-
             return jsonify({
                 'success': True,
                 'created': question.id,
-                'questions': current_questions,
                 'total_questions': len(Question.query.all())
             })
         except Exception as e:
@@ -149,13 +145,10 @@ def create_app(test_config=None):
                 abort(404)
 
             question.delete()
-            all_questions = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, all_questions)
 
             return jsonify({
                 'success': True,
                 'deleted': question_id,
-                'questions': current_questions,
                 'total_questions': len(Question.query.all())
             })
         except Exception as e:
