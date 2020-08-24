@@ -8,6 +8,8 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
+# method used by Caryn for pagination in the project lesson
+
 
 def paginate_questions(request, all_questions):
     page = request.args.get('page', 1, type=int)
