@@ -55,15 +55,15 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 ## Endpoints
 There are a total of seven endpoints you can interact with. This section gives a brief description of what each endpoint does, what request arguments are required, what HTTP methods are allowed, and what the expected return is.
 
-### '/categories'
+### GET '/categories'
 **What it does:** Fetches all categories. The structure is a dictionary wherein each item consists of a key:value pair.
 
 **Request Arguments:** None
 
-**HTTP Methods Allowed:** GET
-
 **Returns:** A JSON object that contains a success message and an object with categories.
 ```
+curl http://127.0.0.1:5000/categories
+
 {
   'categories': {
     1 : 'Science',
@@ -76,15 +76,15 @@ There are a total of seven endpoints you can interact with. This section gives a
 }
 ```
 
-### '/questions'
+### GET '/questions'
 **What it does:** Fetches all questions along with their categories, answers, and difficulty ratings. This is structured as a list of numerous question dictionaries. Each question consists of key:value pairs for ID, question, answer, category, and difficulty. This is the default view of the application.
 
 **Request Arguments:** None
 
-**HTTP Methods Allowed:** GET
-
 **Returns:** A JSON object that contains a success message, a list of questions, the total number of questions, a list of categories, and the current category (defaults to **None**). Results are paginated, allowing up to 10 questions per page.
 ```
+curl http://127.0.0.1:5000/questions
+
 {
   'success': True,
   'questions': [
@@ -124,16 +124,15 @@ There are a total of seven endpoints you can interact with. This section gives a
 }
 ```
 
-### '/questions/category/<int:category_id>'
+### POST '/questions/category/<int:category_id>'
 **What it does:** Fetches all questions based on a category filter. The structure is identical to the main questions endpoint.
 
 **Request Arguments:** category_id
 
-**HTTP Methods Allowed:** POST
-
 **Returns:** A JSON object that contains a success message, a list of questions, the total number of questions, and the current category. Results are paginated, allowing up to 10 questions per page.
 ```
-# category = 1
+# curl http://127.0.0.1:5000/questions/category/1
+
 {
   'success': True,
   'questions': [
@@ -164,16 +163,15 @@ There are a total of seven endpoints you can interact with. This section gives a
 }
 ```
 
-### '/questions/search'
+### POST '/questions/search'
 **What it does:** Fetches all questions that match a search term provided by the user. The structure is identical to the main questions endpoint.
 
-**Request Arguments:** None
-
-**HTTP Methods Allowed:** POST
+**Request Arguments:** searchTerm
 
 **Returns:** A JSON object that contains a success message, a list of questions, the total number of questions, and the current category (defaults to **None**). Results are paginated, allowing up to 10 questions per page.
 ```
-# search term = 'title'
+# curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type: application/json" -d '{"searchTerm":"title"}'
+
 {
   'success': True,
   'questions': [
@@ -194,6 +192,38 @@ There are a total of seven endpoints you can interact with. This section gives a
   ],
   'total_questions': 20,
   'current_category': None
+}
+```
+
+### POST '/questions'
+**What it does:** Posts a new question to the database. 
+
+**Request Arguments:** body object that includes question, answer, difficulty, and category
+
+**Returns:** A JSON object that contains a success message, the ID of the question just created, and the total number of questions
+```
+# curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"Where is Mount Rushmore?", "answer":"South Dakota", "difficulty":1, "category":3}'
+
+{
+  'success': True,
+  'created': 40,
+  'total_questions': 23
+}
+```
+
+### DELETE '/questions/<int:question_id>'
+**What it does:** Deletes a question from the database. 
+
+**Request Arguments:** question_id
+
+**Returns:** A JSON object that contains a success message, the ID of the question just deleted, and the total number of questions
+```
+# curl http://127.0.0.1:5000/questions/40 -X DELETE
+
+{
+  'success': True,
+  'deleted': 40,
+  'total_questions': 22
 }
 ```
 
