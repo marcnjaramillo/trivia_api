@@ -202,7 +202,8 @@ curl http://127.0.0.1:5000/questions
 
 **Returns:** A JSON object that contains a success message, the ID of the question just created, and the total number of questions
 ```
-# curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"Where is Mount Rushmore?", "answer":"South Dakota", "difficulty":1, "category":3}'
+# curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d
+'{"question":"Where is Mount Rushmore?", "answer":"South Dakota", "difficulty":1, "category":3}'
 
 {
   'success': True,
